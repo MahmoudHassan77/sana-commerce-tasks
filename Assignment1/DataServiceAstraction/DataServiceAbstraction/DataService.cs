@@ -8,7 +8,7 @@ public class DataService : IDataService
     {
         if(filePath is null)
             throw new ArgumentNullException(nameof(filePath));
-        if (!File.Exists(_filePath))
+        if (!File.Exists(filePath))
             throw new FileNotFoundException(_filePath);
         _filePath = filePath;
     }
