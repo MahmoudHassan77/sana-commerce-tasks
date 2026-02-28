@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServiceAstraction", "DataServiceAstraction\DataServiceAstraction.csproj", "{36CBF927-6B3A-4424-BDE3-6B64A19FCAB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServiceAbstraction", "DataServiceAbstraction\DataServiceAbstraction.csproj", "{36CBF927-6B3A-4424-BDE3-6B64A19FCAB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
