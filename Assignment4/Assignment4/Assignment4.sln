@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheImplementation", "CacheImplementation\CacheImplementation.csproj", "{F1311AAE-D539-4F84-B1D4-80869D84B25A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheImplementationTests", "CacheImplementationTests\CacheImplementationTests.csproj", "{0009148A-13DA-4884-9913-EE8292A8AE47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F1311AAE-D539-4F84-B1D4-80869D84B25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1311AAE-D539-4F84-B1D4-80869D84B25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1311AAE-D539-4F84-B1D4-80869D84B25A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0009148A-13DA-4884-9913-EE8292A8AE47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0009148A-13DA-4884-9913-EE8292A8AE47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0009148A-13DA-4884-9913-EE8292A8AE47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0009148A-13DA-4884-9913-EE8292A8AE47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
