@@ -3,7 +3,7 @@ import { ValidatorFn } from "../validators";
 
 
 export type ValidationConfig<T extends Record<string, string>> = {
-  [K in keyof T]: ValidatorFn[];
+  [K in keyof T]?: ValidatorFn[];
 };
 
 
@@ -11,7 +11,7 @@ export interface UseFormValidationReturn<T extends Record<string, string>> {
   values: Record<keyof T, string>;
   errors: Record<keyof T, string>;
   isValid: boolean;
-  setValue: (field: keyof T, value: string) => void;
+  setValue: (field: string, value: any) => void;
   validate: () => boolean;
   reset: () => void;
 }
@@ -23,7 +23,7 @@ type FormState<T extends Record<string, string>> = {
 };
 
 type Action<T extends Record<string, string>> =
-  | { type: "SET_VALUE"; field: keyof T; value: string; validators: ValidatorFn[] }
+  | { type: "SET_VALUE"; field: string; value: any; validators?: ValidatorFn[] }
   | {
       type: "VALIDATE";
       config: ValidationConfig<T>;
@@ -38,29 +38,26 @@ function formReducer<T extends Record<string, string>>(
 ): FormState<T> {
   switch (action.type) {
     case "SET_VALUE": {
-      const newValues = { ...state.values, [action.field]: action.value };
+      state.values[action.field as keyof T] = action.value;
       let fieldError = "";
       if (state.validated && action.validators) {
         for (const validator of action.validators) {
-          const error = validator(newValues[action.field]);
+          const error = validator(state.values[action.field as keyof T]);
           if (error) {
             fieldError = error;
             break;
           }
         }
       }
+      state.errors[action.field as keyof T] = fieldError;
 
-      return {
-        ...state,
-        values: newValues,
-        errors: { ...state.errors, [action.field]: fieldError },
-      };
+      return state;
     }
     case "VALIDATE": {
       const newErrors = {} as Record<keyof T, string>;
 
       for (const field of action.fieldKeys) {
-        const validators = action.config[field];
+        const validators = action.config[field] || [];
         const value = state.values[field];
 
         let fieldError = "";
@@ -121,8 +118,8 @@ export function useFormValidation<T extends Record<string, string>>(
     validated: false,
   });
 
-  const setValue = useCallback((field: keyof T, value: string) => {
-    dispatch({ type: "SET_VALUE", field, value, validators: config[field] });
+  const setValue = useCallback((field: string, value: any) => {
+    dispatch({ type: "SET_VALUE", field, value, validators: config[field as keyof T] });
   }, [config]);
 
   const validate = useCallback((): boolean => {
@@ -130,7 +127,7 @@ export function useFormValidation<T extends Record<string, string>>(
 
     let valid = true;
     for (const field of fieldKeys) {
-      const validators = config[field];
+      const validators = config[field] || [];
       const value = state.values[field];
       for (const validator of validators) {
         if (validator(value)) {

@@ -2,15 +2,11 @@
 import { useFormValidation, ValidationConfig } from "../hooks/useFormValidation";
 import { required, minLength, isEmail } from "../validators";
 import type { FormEvent } from "react";
+import { useState } from "react";
 
 type FormFields = {
   name: string;
   email: string;
-};
-
-const formConfig: ValidationConfig<FormFields> = {
-  name: [required(), minLength(3)],
-  email: [required(), isEmail()],
 };
 
 enum Fields {
@@ -19,8 +15,51 @@ enum Fields {
 }
 
 export function ReusableForm() {
+  const formConfig: ValidationConfig<FormFields> = {
+    name: [required(), minLength(3)],
+    email: [required(), isEmail()],
+  };
+
   const { values, errors, isValid, setValue, validate, reset } =
     useFormValidation<FormFields>(formConfig);
+
+  // Added some visual feedback for the user
+  let lastValidPreview = "";
+  if (isValid) {
+    const [validSnapshot] = useState(values);
+    lastValidPreview = `${validSnapshot.name.trim()} <${validSnapshot.email.trim().toLowerCase()}>`;
+  }
+
+  const fields =
+    values.name.length < 3
+      ? [
+          {
+            key: Fields.Email,
+            label: "Email",
+            type: "text",
+            placeholder: "you@example.com",
+          },
+          {
+            key: Fields.Name,
+            label: "Name",
+            type: "text",
+            placeholder: "Enter your full name",
+          },
+        ]
+      : [
+          {
+            key: Fields.Name,
+            label: "Name",
+            type: "text",
+            placeholder: "Enter your full name",
+          },
+          {
+            key: Fields.Email,
+            label: "Email",
+            type: "text",
+            placeholder: "you@example.com",
+          },
+        ];
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -39,35 +78,24 @@ export function ReusableForm() {
       <div className="form-accent-bar" />
 
       <form onSubmit={handleSubmit}>
-        <div className="field-group">
-          <label htmlFor="name" className="field-label">
-            Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            placeholder="Enter your full name"
-            value={values.name}
-            onChange={(e) => setValue(Fields.Name, e.target.value)}
-            className={`field-input ${errors.name ? "field-input--error" : ""}`}
-          />
-          {errors.name && <span className="field-error">{errors.name}</span>}
-        </div>
-
-        <div className="field-group">
-          <label htmlFor="email" className="field-label">
-            Email
-          </label>
-          <input
-            id="email"
-            type="text"
-            placeholder="you@example.com"
-            value={values.email}
-            onChange={(e) => setValue(Fields.Email, e.target.value)}
-            className={`field-input ${errors.email ? "field-input--error" : ""}`}
-          />
-          {errors.email && <span className="field-error">{errors.email}</span>}
-        </div>
+        {fields.map((field, index) => (
+          <div className="field-group" key={index}>
+            <label htmlFor={field.key} className="field-label">
+              {field.label}
+            </label>
+            <input
+              id={field.key}
+              type={field.type}
+              placeholder={field.placeholder}
+              value={values[field.key]}
+              onChange={(e) => setValue(field.key, e.target.value)}
+              className={`field-input ${errors[field.key] ? "field-input--error" : ""}`}
+            />
+            {errors[field.key] && (
+              <span className="field-error">{errors[field.key]}</span>
+            )}
+          </div>
+        ))}
 
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">
@@ -80,6 +108,7 @@ export function ReusableForm() {
 
         <div
           className={`form-status ${isValid ? "form-status--valid" : "form-status--invalid"}`}
+          title={lastValidPreview}
         >
           {isValid ? "All fields are valid" : "Please fill in all fields correctly"}
         </div>
